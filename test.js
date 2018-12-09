@@ -16,16 +16,24 @@ var bandsInTownAPI = "https://rest.bandsintown.com/artists/" +
 
 var spotify = new Spotify(keys.spotify);
 
-if (command === "concert-this") {
-    getConcertInfo();
-} else if (command === "spotify-this-song") {
-    getSpotifyInfo();
-} else if (command === "movie-this") {
-    getMovieInfo();
+getInfo();
+
+function getInfo() {
+    if (command === "concert-this") {
+        getConcertInfo();
+    } else if (command === "spotify-this-song") {
+        getSpotifyInfo();
+    } else if (command === "movie-this") {
+        getMovieInfo();
+    } else if (command === "do-what-it-says") {
+        doWhatThisSays();
+    }
 }
 
 // --- Functions
 function getSpotifyInfo() {
+    console.log("\ngetSpotifyInfo() was called.\n");
+    
     spotify.search({
         type: 'track',
         query: inputString
@@ -39,14 +47,8 @@ function getSpotifyInfo() {
     });
 }
 
-
-// Functions for each command type
-// concert-this
-// spotify-this-song
-// movie-this
-// do-what-it-says
-
 function getConcertInfo() {
+    console.log("\ngetConcertInfo() was called.\n");
     axios.get(bandsInTownAPI)
         .then(function (response) {
             console.log(response);
@@ -57,6 +59,7 @@ function getConcertInfo() {
 }
 
 function getMovieInfo() {
+    console.log("\ngetMovieInfo() was called.\n");
     // OMDB data requests: http://www.omdbapi.com/?apikey=[yourkey]&
     axios.get("http://www.omdbapi.com/?apikey=trilogy&t=" + inputString).then(
         function (response) {
@@ -87,5 +90,16 @@ function getMovieInfo() {
 }
 
 function doWhatThisSays() {
-    
+    console.log("\ndoWhatThisSays() was called.\n");
+    fs.readFile("t.txt","utf-8", function (error, data) {
+        if (error) {
+            return console.log(error);
+        }
+        // HOLD CONTENTS OF TEXT FILE. DELIMIT BY COMMA.
+        var dataArray = data.split(","); 
+        // PASS TEXT FILE CONTENTS INTO CORRECT TARGET FUNCTION
+        command = dataArray[0];
+        inputString = dataArray[1];
+        getInfo();
+    })
 }
