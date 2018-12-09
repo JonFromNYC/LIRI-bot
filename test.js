@@ -17,11 +17,11 @@ var bandsInTownAPI = "https://rest.bandsintown.com/artists/" +
 var spotify = new Spotify(keys.spotify);
 
 if (command === "concert-this") {
-    console.log("\nChecking Bands in Town\n");
     getConcertInfo();
 } else if (command === "spotify-this-song") {
-    console.log("\nCalling Spotify\n");
     getSpotifyInfo();
+} else if (command === "movie-this") {
+    getMovieInfo();
 }
 
 // --- Functions
@@ -54,4 +54,38 @@ function getConcertInfo() {
         .catch(function (error) {
             console.log(error);
         });
+}
+
+function getMovieInfo() {
+    // OMDB data requests: http://www.omdbapi.com/?apikey=[yourkey]&
+    axios.get("http://www.omdbapi.com/?apikey=trilogy&t=" + inputString).then(
+        function (response) {
+            var m = response.data; // To save typing time later
+            
+            // variables to hold specific data points
+            var mTitle, mYear, mIMDB, mTomato, mCountry, mLanguage, mPlot, mActors;
+
+            mTitle = m.Title;
+            mYear = m.Year;
+            mIMDB = m.Ratings[0].Value;
+            mTomato = m.Ratings[1].Value;
+            mCountry = m.Country;
+            mLanguage = m.Language;
+            mPlot = m.Plot;
+            mActors = m.Actors;
+
+            console.log("\nMovie Title: \t" + mTitle +
+                        "\nReleased: \t" + mYear + 
+                        "\nIMDB Rating: \t" + mIMDB + 
+                        "\nRotten Tomato: \t" + mTomato + 
+                        "\nProduced in: \t" + mCountry + 
+                        "\nLanguages: \t" + mLanguage + 
+                        "\n\nPlot: \t\t" + mPlot + 
+                        "\n\nActor(s): \t" + mActors);
+        }
+    );
+}
+
+function doWhatThisSays() {
+    
 }
