@@ -64,7 +64,7 @@ function getSpotifyInfo() {
 function getConcertInfo() {
     console.log("\ngetConcertInfo() was called.\n");
     if (inputString === "") {
-        console.log("No band/artist entered - try again.");
+        console.log("Try again.");
     }
 
     axios.get(bandsInTownAPI)
@@ -84,19 +84,24 @@ function getConcertInfo() {
                     }
                     var date = moment(eachConcert[i].datetime)
                     date = date.format("llll")
-                    var eachVenue = ("\nEvent Name:\t" + venue + "\nLocation:\t" + location + "\nDate:\t\t" + date + "\n");
+                    var eachVenue = ("\nEvent Name:\t" + venue + 
+                                    "\nLocation:\t" + location + 
+                                    "\nDate:\t\t" + date + "\n");
                     console.log(eachVenue)
                 }
             // ====================
         })
         .catch(function (error) {
-            console.log(error);
+            console.log("Please enter an artist name.");
         });
 }
 
 function getMovieInfo() {
     console.log("\ngetMovieInfo() was called.\n");
-    // OMDB data requests: http://www.omdbapi.com/?apikey=[yourkey]&
+    if (inputString === "") {
+        inputString = "Mr. Nobody";
+    }
+    
     axios.get("http://www.omdbapi.com/?apikey=trilogy&t=" + inputString).then(
         function (response) {
             var m = response.data; // To save typing time later
@@ -141,10 +146,10 @@ function doWhatThisSays() {
     });
 }
 
-
 function saveLog(newLogData) {
     var divider = "\n";
-    fs.appendFile("log.txt", newLogData + divider, function (err) {
+    var time = moment().format("llll");
+    fs.appendFile("log.txt", time + " " + newLogData + divider, function (err) {
         if (err) {
             throw err;
         }
