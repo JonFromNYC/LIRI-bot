@@ -4,6 +4,7 @@ var Spotify = require('node-spotify-api');
 var keys = require("./keys.js");
 var axios = require("axios");
 var moment = require("moment");
+moment().format();
 var fs = require("fs");
 
 // Variables to hold user input
@@ -27,6 +28,9 @@ function getInfo() {
         getMovieInfo();
     } else if (command === "do-what-it-says") {
         doWhatThisSays();
+    } else{
+        console.log("You didn't enter the correct command");
+        
     }
 }
 
@@ -42,8 +46,14 @@ function getSpotifyInfo() {
             return console.log('Error occurred: ' + err);
         }
 
-        console.log(data);
-        // data.tracks.items[args]
+        console.log("Album:\t " + data.tracks.items[0].album.name);
+        console.log("Artist:\t " + data.tracks.items[0].album.artists[0].name);
+        if (data.tracks.items[0].preview_url === null) {
+            console.log("Preview: No preview available");            
+        } else {
+            console.log("Preview:\t" + data.tracks.items[0].preview_url + "\n");
+        }
+
     });
 }
 
@@ -101,5 +111,17 @@ function doWhatThisSays() {
         command = dataArray[0];
         inputString = dataArray[1];
         getInfo();
+        saveLog(data);
+    });
+}
+
+
+function saveLog(newLogData) {
+    var divider = "\n";
+    fs.appendFile("log.txt", newLogData + divider, function (err) {
+        if (err) {
+            throw err;
+        }
+        console.log(newLogData);
     })
 }
