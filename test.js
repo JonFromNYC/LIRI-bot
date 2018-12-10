@@ -37,6 +37,10 @@ function getInfo() {
 // --- Functions
 function getSpotifyInfo() {
     console.log("\ngetSpotifyInfo() was called.\n");
+
+    if (inputString === "") {
+        inputString = "The Sign Ace of Base";
+    }
     
     spotify.search({
         type: 'track',
@@ -51,7 +55,7 @@ function getSpotifyInfo() {
         if (data.tracks.items[0].preview_url === null) {
             console.log("Preview: No preview available");            
         } else {
-            console.log("Preview:\t" + data.tracks.items[0].preview_url + "\n");
+            console.log("Preview: " + data.tracks.items[0].preview_url + "\n");
         }
 
     });
@@ -59,9 +63,31 @@ function getSpotifyInfo() {
 
 function getConcertInfo() {
     console.log("\ngetConcertInfo() was called.\n");
+    if (inputString === "") {
+        console.log("No band/artist entered - try again.");
+    }
+
     axios.get(bandsInTownAPI)
         .then(function (response) {
+            // console.log(response);
             console.log(response);
+            var eachConcert = response.data;
+            // ====================
+                for (i = 0; i < eachConcert.length; i++) {
+                    var venue = eachConcert[i].venue.name;
+                    if (eachConcert[i].country === "United States") {
+                        // This will print a venue within the United States
+                        var location = eachConcert[i].venue.city + ", " + eachConcert[i].venue.region
+                    } else {
+                        // This will print a venue outside the United States
+                        var location = eachConcert[i].venue.city + ", " + eachConcert[i].venue.country
+                    }
+                    var date = moment(eachConcert[i].datetime)
+                    date = date.format("llll")
+                    var eachVenue = ("\nEvent Name:\t" + venue + "\nLocation:\t" + location + "\nDate:\t\t" + date + "\n");
+                    console.log(eachVenue)
+                }
+            // ====================
         })
         .catch(function (error) {
             console.log(error);
